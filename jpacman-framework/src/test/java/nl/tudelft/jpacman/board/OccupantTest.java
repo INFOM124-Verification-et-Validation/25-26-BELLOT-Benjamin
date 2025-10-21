@@ -31,7 +31,9 @@ class OccupantTest {
      */
     @Test
     void noStartSquare() {
-        // TODO
+        // Une nouvelle unité ne doit pas être placée sur une case
+        assertThat(unit.hasSquare()).isFalse();
+        assertThat(unit.getSquare()).isNull();
     }
 
     /**
@@ -40,7 +42,15 @@ class OccupantTest {
      */
     @Test
     void testOccupy() {
-        // TODO
+        Square target = new BasicSquare();
+        unit.occupy(target);
+
+        // L’unité doit être sur la case
+        assertThat(unit.hasSquare()).isTrue();
+        assertThat(unit.getSquare()).isEqualTo(target);
+
+        // La case doit contenir l’unité
+        assertThat(target.getOccupants()).contains(unit);
     }
 
     /**
@@ -49,6 +59,24 @@ class OccupantTest {
      */
     @Test
     void testReoccupy() {
-        // TODO
+        Square first = new BasicSquare();
+        Square second = new BasicSquare();
+
+        // L’unité occupe d’abord la première case
+        unit.occupy(first);
+        assertThat(first.getOccupants()).contains(unit);
+
+        // Puis elle se déplace sur une autre case
+        unit.occupy(second);
+
+        // La première ne contient plus l’unité
+        assertThat(first.getOccupants()).doesNotContain(unit);
+
+        // La deuxième la contient
+        assertThat(second.getOccupants()).contains(unit);
+
+        // Et l’unité a bien la deuxième comme base
+        assertThat(unit.getSquare()).isEqualTo(second);
     }
 }
+

@@ -13,7 +13,7 @@ import java.util.List;
  * A useful method for retrieving ghosts from your map would be:
  * findUnitInBoard in the Navigation class.
  */
-public final class GhostMapParser extends MapParser {
+public class GhostMapParser extends MapParser {
     private final GhostFactory ghostFactory;
 
     /**
