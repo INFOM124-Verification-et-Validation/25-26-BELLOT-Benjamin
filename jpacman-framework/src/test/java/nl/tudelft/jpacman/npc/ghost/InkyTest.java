@@ -10,7 +10,6 @@ import nl.tudelft.jpacman.level.Navigation;
 import nl.tudelft.jpacman.level.PelletFactory;
 import nl.tudelft.jpacman.level.Player;
 import nl.tudelft.jpacman.level.PlayerFactory;
-import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 
 import org.junit.jupiter.api.Test;
@@ -21,9 +20,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Tests de comportement d'Inky (nextAiMove) selon la spécification.
- */
 class InkyTest {
 
     /** GhostMapParser étendu pour supporter 'I' (Inky) et 'B' (Blinky). */
@@ -36,21 +32,19 @@ class InkyTest {
         }
 
         @Override
-        protected void addSquare(Square[][] grid, List<Ghost> ghosts,
-                                 List<Square> startPositions, int x, int y, char c) {
+        protected void addSquare(Square[][] grid, java.util.List<nl.tudelft.jpacman.npc.Ghost> ghosts,
+                                 java.util.List<Square> startPositions, int x, int y, char c) {
             if (c == 'I') {
                 grid[x][y] = makeGhostSquare(ghosts, ghostFactory.createInky());
-            }
-            else if (c == 'B') {
+            } else if (c == 'B') {
                 grid[x][y] = makeGhostSquare(ghosts, ghostFactory.createBlinky());
-            }
-            else {
+            } else {
                 super.addSquare(grid, ghosts, startPositions, x, y, c);
             }
         }
+    }
 
-
-        private TestGhostMapParser newParser(PacManSprites sprites) {
+    private TestGhostMapParser newParser(PacManSprites sprites) {
         BoardFactory boardFactory   = new BoardFactory(sprites);
         GhostFactory ghostFactory   = new GhostFactory(sprites);
         PelletFactory pelletFactory = new PelletFactory(sprites);
@@ -70,13 +64,8 @@ class InkyTest {
         return Navigation.findUnitInBoard(Inky.class, board);
     }
 
-    /* ---------------------- CAS FAVORABLES ---------------------- */
+    /* ---------- Favorables ---------- */
 
-    /**
-     * Favorable #1 : Pac-Man regarde à l’est, Inky doit aller EAST
-     * Carte : couloir horizontal, Blinky à gauche, Pac-Man, puis Inky.
-     * B --(vers B=2 cases devant P à l'est)--> destination plus à l'est, donc Inky doit aller vers l'est.
-     */
     @Test
     void inkyMovesEastWhenTargetIsToTheEast() {
         PacManSprites sprites = new PacManSprites();
@@ -98,11 +87,6 @@ class InkyTest {
         assertThat(move).contains(Direction.EAST);
     }
 
-    /**
-     * Favorable #2 : Pac-Man regarde à l’ouest, Inky doit aller WEST
-     * Carte : couloir horizontal, Inky à gauche, Pac-Man, Blinky plus à droite.
-     * Le point visé (doublement du segment Blinky -> 2 cases devant Pac-Man vers l'ouest) est à l'ouest d'Inky.
-     */
     @Test
     void inkyMovesWestWhenTargetIsToTheWest() {
         PacManSprites sprites = new PacManSprites();
@@ -124,11 +108,8 @@ class InkyTest {
         assertThat(move).contains(Direction.WEST);
     }
 
-    /* ---------------------- CAS DÉFAVORABLES ---------------------- */
+    /* ---------- Défavorables ---------- */
 
-    /**
-     * Défavorable #1 : Aucun Blinky sur la carte -> Optional.empty()
-     */
     @Test
     void inkyNoMoveWhenNoBlinky() {
         PacManSprites sprites = new PacManSprites();
@@ -150,9 +131,6 @@ class InkyTest {
         assertThat(move).isEmpty();
     }
 
-    /**
-     * Défavorable #2 : Aucun joueur enregistré (même si la carte a 'P') -> Optional.empty()
-     */
     @Test
     void inkyNoMoveWhenNoPlayerRegistered() {
         PacManSprites sprites = new PacManSprites();
@@ -165,7 +143,7 @@ class InkyTest {
         );
 
         Level level = parser.parseMap(map);
-        // Ne pas enregistrer de joueur
+        // pas de registerPlayer
 
         Inky inky = findInky(level);
         Optional<Direction> move = inky.nextAiMove();
@@ -173,10 +151,6 @@ class InkyTest {
         assertThat(move).isEmpty();
     }
 
-    /**
-     * Défavorable #3 : Pas de chemin entre Blinky et la case B=2 cases devant Pac-Man -> Optional.empty()
-     * On isole Blinky avec des murs pour que shortestPath(blinky, B) renvoie null.
-     */
     @Test
     void inkyNoMoveWhenBlinkyCannotReachPlayerAheadSquare() {
         PacManSprites sprites = new PacManSprites();
@@ -190,7 +164,6 @@ class InkyTest {
             "# ####    #",
             "###########"
         );
-        // Couloir séparé par des murs "####" entre Blinky et la zone de P/I
 
         Level level = parser.parseMap(map);
         newAndRegisterPlayer(level, pf, Direction.EAST);

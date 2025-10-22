@@ -2,9 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>nl.tudelft.jpacman</groupId>
 	<artifactId>jpacman-framework</artifactId>
 	<version>8.1.1</version>
+
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -13,13 +16,13 @@
 		</license>
 	</licenses>
 
-	<modelVersion>4.0.0</modelVersion>
-
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- versions -->
 		<junit.jupiter.version>5.9.3</junit.jupiter.version>
 		<junit.platform.version>1.9.3</junit.platform.version>
 		<junit.version>4.13.2</junit.version>
@@ -42,7 +45,8 @@
 		<pmd.plugin.version>3.21.0</pmd.plugin.version>
 		<project.info.reports.plugin>3.4.3</project.info.reports.plugin>
 		<site.plugin>3.12.1</site.plugin>
-		<surefire.plugin.version>2.22.2</surefire.plugin.version>
+		<!-- passe Surefire à 3.2.5 -->
+		<surefire.plugin.version>3.2.5</surefire.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -51,6 +55,8 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.plugin.version}</version>
 		</dependency>
+
+		<!-- JUnit 5 + Platform -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
@@ -64,11 +70,19 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- JUnit Vintage (si besoin de tests JUnit4) -->
+		<dependency>
 			<groupId>org.junit.vintage</groupId>
 			<artifactId>junit-vintage-engine</artifactId>
 			<version>${junit.vintage.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Platform -->
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
@@ -81,19 +95,16 @@
 			<version>${junit.platform.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
-			<version>${junit.jupiter.version}</version>
-			<scope>test</scope>
-		</dependency>
 
+		<!-- JUnit4 (si legacy) -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Tests utilitaires -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
@@ -106,6 +117,8 @@
 			<version>${assertj.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- annotations spotbugs (compile only) -->
 		<dependency>
 			<groupId>com.github.spotbugs</groupId>
 			<artifactId>spotbugs-annotations</artifactId>
@@ -123,9 +136,7 @@
 				<executions>
 					<execution>
 						<id>enforce-maven</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
+						<goals><goal>enforce</goal></goals>
 						<configuration>
 							<rules>
 								<requireMavenVersion>
@@ -136,20 +147,21 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
-				<!-- This plugin will set properties values using dependency information -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>${dependency.plugin.version}</version>
 				<executions>
 					<execution>
-						<goals>
-							<goal>properties</goal>
-						</goals>
+						<goals><goal>properties</goal></goals>
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- UNIQUE compiler plugin (17) -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${compiler.plugin.version}</version>
 				<configuration>
@@ -157,6 +169,7 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${assembly.plugin.version}</version>
@@ -168,12 +181,11 @@
 				<executions>
 					<execution>
 						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
+						<goals><goal>single</goal></goals>
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -186,16 +198,12 @@
 				<executions>
 					<execution>
 						<id>test-files</id>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
+						<goals><goal>test-jar</goal></goals>
 					</execution>
 				</executions>
 			</plugin>
 
-			<!-- The checkstyle, spotbugs and PMD plugins have configurations, for
-				the checkstyle:checkstyle and pmd:pmd to work properly, the plugins should
-				also be specified under the build section. See: https://github.com/sevntu-checkstyle/checkstyle-samples/blob/master/maven-project/pom.xml -->
+			<!-- Qualimétrie -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -215,6 +223,7 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
@@ -230,6 +239,7 @@
 					</rulesets>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
@@ -239,6 +249,7 @@
 					<failOnError>true</failOnError>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
@@ -258,6 +269,8 @@
 					</targetClasses>
 				</configuration>
 			</plugin>
+
+			<!-- Tests -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -276,8 +289,11 @@
 				</dependencies>
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
+					<useModulePath>false</useModulePath>
 				</configuration>
 			</plugin>
+
+			<!-- Couverture -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -285,27 +301,17 @@
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
+						<goals><goal>prepare-agent</goal></goals>
 					</execution>
 					<execution>
 						<id>default-report</id>
-						<goals>
-							<goal>report</goal>
-						</goals>
+						<goals><goal>report</goal></goals>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>14</source>
-					<target>14</target>
-				</configuration>
-			</plugin>
 		</plugins>
+
+		<!-- Garde un SEUL pluginManagement avec un SEUL <plugins> -->
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -335,9 +341,7 @@
 				<version>${jacoco.plugin.version}</version>
 				<reportSets>
 					<reportSet>
-						<reports>
-							<report>report</report>
-						</reports>
+						<reports><report>report</report></reports>
 					</reportSet>
 				</reportSets>
 			</plugin>
@@ -378,37 +382,11 @@
 				<version>${pit.plugin.version}</version>
 				<reportSets>
 					<reportSet>
-						<reports>
-							<report>report</report>
-						</reports>
+						<reports><report>report</report></reports>
 					</reportSet>
 				</reportSets>
 			</plugin>
 		</plugins>
 	</reporting>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.10.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<version>3.25.3</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.5</version>
-			</plugin>
-		</plugins>
-	</build>
 </project>

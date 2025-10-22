@@ -1,6 +1,6 @@
 package nl.tudelft.jpacman.board;
 
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
