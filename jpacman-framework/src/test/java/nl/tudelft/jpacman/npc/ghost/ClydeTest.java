@@ -3,7 +3,7 @@ package nl.tudelft.jpacman.npc.ghost;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.level.Level;
-import nl.tudelft.jpacman.level.Navigation;
+import nl.tudelft.jpacman.npc.ghost.Navigation;
 import nl.tudelft.jpacman.level.Player;
 import nl.tudelft.jpacman.level.PlayerFactory;
 import nl.tudelft.jpacman.level.LevelFactory;
@@ -11,7 +11,7 @@ import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.npc.ghost.GhostMapParser;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
-import nl.tudelft.jpacman.level.PelletFactory;
+import nl.tudelft.jpacman.level.Pellet;
 
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +33,7 @@ class ClydeTest {
     private GhostMapParser newParser(PacManSprites sprites) {
         BoardFactory boardFactory   = new BoardFactory(sprites);
         GhostFactory ghostFactory   = new GhostFactory(sprites);
-        PelletFactory pelletFactory = new PelletFactory(sprites);
-        LevelFactory levelFactory   = new LevelFactory(sprites, ghostFactory, pelletFactory);
+        LevelFactory levelFactory   = new LevelFactory(sprites, ghostFactory);
         return new GhostMapParser(levelFactory, boardFactory, ghostFactory);
     }
 
