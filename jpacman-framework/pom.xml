@@ -47,6 +47,7 @@
 		<site.plugin>3.12.1</site.plugin>
 		<!-- passe Surefire à 3.2.5 -->
 		<surefire.plugin.version>3.2.5</surefire.plugin.version>
+		<sonar.organization>infom124-verification-et-validation</sonar.organization>
 	</properties>
 
 	<dependencies>
